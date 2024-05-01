@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../data/database_helper.dart';
@@ -24,11 +26,20 @@ class _HomeScreenState extends State<HomeScreen> {
       notes = fetchedNotes;
     });
   }
-
+  Color randomColor() {
+    final random = Random();
+    return Color.fromRGBO(
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+      1,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.green,
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text('Notes'),
       ),
       body: ListView.builder(
@@ -37,23 +48,33 @@ class _HomeScreenState extends State<HomeScreen> {
           final note = notes[index];
           return Padding(
             padding: const EdgeInsets.all(4.0),
-            child: InkWell(
-              onLongPress: () async {
-                _editNote(note);
-              },
-              child: ListTile(
-                tileColor: Colors.yellow,
-                title: Text(note['title']),
-                subtitle: Text(note['content']),
-                trailing: IconButton(
-                  onPressed: () async {
-                    await dbHelper.delete(note['id']);
-                    _fetchNotes();
-                  },
-                  icon: Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                  ),
+            child: ListTile(
+              tileColor: randomColor(),
+              title: Text(note['title']),
+              subtitle: Text(note['content']),
+              trailing: FittedBox(
+                child: Column(
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        _editNote(note);
+                      },
+                      icon: Icon(
+                        Icons.edit,
+                        color: Colors.green,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        await dbHelper.delete(note['id']);
+                        _fetchNotes();
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -71,9 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _editNote(Map<String, dynamic> note) async {
     TextEditingController titleController =
-    TextEditingController(text: note['title']);
+        TextEditingController(text: note['title']);
     TextEditingController contentController =
-    TextEditingController(text: note['content']);
+        TextEditingController(text: note['content']);
 
     await showModalBottomSheet(
       context: context,
