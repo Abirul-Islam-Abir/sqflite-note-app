@@ -28,28 +28,32 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(backgroundColor: Colors.green,
         title: Text('Notes'),
       ),
       body: ListView.builder(
         itemCount: notes.length,
         itemBuilder: (context, index) {
           final note = notes[index];
-          return InkWell(
-            onLongPress: () async {
-              _editNote(note);
-            },
-            child: ListTile(
-              title: Text(note['title']),
-              subtitle: Text(note['content']),
-              trailing: IconButton(
-                onPressed: () async {
-                  await dbHelper.delete(note['id']);
-                  _fetchNotes();
-                },
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.red,
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: InkWell(
+              onLongPress: () async {
+                _editNote(note);
+              },
+              child: ListTile(
+                tileColor: Colors.yellow,
+                title: Text(note['title']),
+                subtitle: Text(note['content']),
+                trailing: IconButton(
+                  onPressed: () async {
+                    await dbHelper.delete(note['id']);
+                    _fetchNotes();
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
                 ),
               ),
             ),
